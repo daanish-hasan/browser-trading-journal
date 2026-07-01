@@ -290,11 +290,29 @@
   .notes-empty{display:flex;align-items:center;justify-content:center;flex:1;color:var(--muted);text-align:center;flex-direction:column;gap:12px;min-height:460px}
   .notes-empty svg{width:46px;height:46px;opacity:.5}
 
+  /* ---------- Strategy Page ---------- */
+  .strat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:22px}
+  .strat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s}
+  .strat-card:hover{transform:translateY(-3px);border-color:#3a4173;box-shadow:0 10px 26px rgba(0,0,0,.32)}
+  .strat-card .sc-name{font-size:15px;font-weight:700;margin-bottom:6px}
+  .strat-card .sc-notes{font-size:12.5px;color:var(--muted);margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+  .strat-card .sc-stats{display:flex;gap:16px;font-size:12px}
+  .strat-card .sc-stats .ss{display:flex;flex-direction:column;gap:2px}
+  .strat-card .sc-stats .ss .sk{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+  .strat-card .sc-stats .ss .sv{font-weight:700;font-size:13px}
+  .strat-detail-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+  .strat-detail-head h1{font-size:22px;font-weight:700}
+  .strat-detail-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-bottom:22px}
+  .strat-detail-notes{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:22px}
+  .strat-detail-notes h3{font-size:11px;font-weight:700;margin-bottom:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .strat-detail-notes .md-prev{border:none;background:transparent;padding:0;min-height:auto}
+
   @media(max-width:1050px){
     .chart-grid{grid-template-columns:1fr}
     .form-grid{grid-template-columns:repeat(2,1fr)}
     .dgrid{grid-template-columns:repeat(2,1fr)}
     .notes-wrap{grid-template-columns:1fr}
+    .strat-cards{grid-template-columns:1fr}
   }
   @media(max-width:640px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
 </style>
@@ -320,6 +338,10 @@
     <div class="nav-item" data-view="history">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13" stroke-linecap="round"/><circle cx="3.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg>
       Trade History
+    </div>
+    <div class="nav-item" data-view="strategies">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke-linecap="round"/></svg>
+      Strategies
     </div>
     <div class="nav-label">Workspace</div>
     <div class="nav-item" data-view="notes">
@@ -572,6 +594,11 @@
       <div class="note-editor" id="noteEditor"></div>
     </div>
   </section>
+
+  <!-- ================= STRATEGIES ================= -->
+  <section class="view" id="view-strategies">
+    <div id="stratPageContent"></div>
+  </section>
 </main>
 
 <!-- ================= DETAIL MODAL ================= -->
@@ -602,6 +629,27 @@
       </div>
     </div>
     <div class="modal-foot"><button class="btn btn-primary" id="stratDone" type="button">Done</button></div>
+  </div>
+</div>
+
+<!-- ================= STRATEGY EDIT MODAL ================= -->
+<div class="overlay" id="stratEditOverlay" data-edit-id="">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-head"><div class="tt"><h2 id="stratEditTitle">Add Strategy</h2></div><button class="modal-x" id="stratEditX">&times;</button></div>
+    <div class="modal-body">
+      <div class="field" style="margin-bottom:16px">
+        <label>Strategy Name <span class="req">*</span></label>
+        <input id="stratEditName" placeholder="e.g. Breakout, Iron Condor...">
+      </div>
+      <div class="field">
+        <label>Notes (markdown)</label>
+        <textarea id="stratEditNotes" placeholder="Describe your strategy, rules, criteria..." style="min-height:160px"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="stratEditCancel">Cancel</button>
+      <button class="btn btn-primary" id="stratEditSave">Save</button>
+    </div>
   </div>
 </div>
 
@@ -673,6 +721,7 @@ function switchView(v){
   document.getElementById('view-'+v).classList.add('active');
   if(v==='dashboard')renderDashboard();
   if(v==='history')renderHistory();
+  if(v==='strategies')renderStrategiesPage();
   if(v==='notes'){renderTree();renderEditor();}
   if(v==='log'&&!editingId){setFormBalance(currentBalance());updateRisk();}
 }
@@ -856,32 +905,161 @@ function renderDashboard(){if(document.activeElement!==acctInput)acctInput.value
 /* ============================================================
    STRATEGIES (editable / removable)
    ============================================================ */
+const stratId=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function loadSetups(){
   const raw=localStorage.getItem(STORE_SETUPS);
-  if(raw===null){localStorage.setItem(STORE_SETUPS,JSON.stringify(DEFAULT_SETUPS));return DEFAULT_SETUPS.slice();}
-  try{const v=JSON.parse(raw);return Array.isArray(v)?v:DEFAULT_SETUPS.slice();}catch(e){return DEFAULT_SETUPS.slice();}
+  const toObjs=arr=>arr.map(s=>({id:stratId(),name:s,notes:'',createdAt:Date.now()}));
+  if(raw===null){const objs=toObjs(DEFAULT_SETUPS);localStorage.setItem(STORE_SETUPS,JSON.stringify(objs));return objs;}
+  try{
+    const v=JSON.parse(raw);
+    if(!Array.isArray(v))return toObjs(DEFAULT_SETUPS);
+    if(v.length&&typeof v[0]==='string'){const objs=toObjs(v);localStorage.setItem(STORE_SETUPS,JSON.stringify(objs));return objs;}
+    return v;
+  }catch(e){return toObjs(DEFAULT_SETUPS);}
 }
 const saveSetups=a=>localStorage.setItem(STORE_SETUPS,JSON.stringify(a));
 function renderSetupSelect(current){
   const sel=document.getElementById('f_setup');
-  let list=loadSetups().slice();
-  if(current && !list.includes(current))list=[current,...list];
-  sel.innerHTML='<option value="">— Select strategy —</option>'+list.map(s=>`<option value="${escA(s)}">${esc(s)}</option>`).join('');
+  let names=loadSetups().map(s=>s.name);
+  if(current && !names.includes(current))names=[current,...names];
+  sel.innerHTML='<option value="">— Select strategy —</option>'+names.map(s=>`<option value="${escA(s)}">${esc(s)}</option>`).join('');
   if(current!==undefined)sel.value=current||'';
 }
 function renderStratList(){
   const wrap=document.getElementById('stratList'),list=loadSetups();
-  wrap.innerHTML=list.length?list.map((s,i)=>`<div class="strat-item"><input data-i="${i}" value="${escA(s)}"><button class="del" data-del="${i}" title="Delete">&times;</button></div>`).join(''):'<div style="color:var(--muted);font-size:12.5px;padding:4px">No strategies yet. Add one below.</div>';
-  wrap.querySelectorAll('input[data-i]').forEach(inp=>inp.addEventListener('input',()=>{const a=loadSetups();a[+inp.dataset.i]=inp.value;saveSetups(a);}));
+  wrap.innerHTML=list.length?list.map((s,i)=>`<div class="strat-item"><input data-i="${i}" value="${escA(s.name)}"><button class="del" data-del="${i}" title="Delete">&times;</button></div>`).join(''):'<div style="color:var(--muted);font-size:12.5px;padding:4px">No strategies yet. Add one below.</div>';
+  wrap.querySelectorAll('input[data-i]').forEach(inp=>inp.addEventListener('input',()=>{const a=loadSetups();a[+inp.dataset.i].name=inp.value;saveSetups(a);}));
   wrap.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const a=loadSetups();a.splice(+b.dataset.del,1);saveSetups(a);renderStratList();}));
 }
 document.getElementById('manageStratBtn').onclick=()=>{renderStratList();document.getElementById('stratOverlay').classList.add('show');};
-document.getElementById('stratAdd').onclick=()=>{const i=document.getElementById('stratNew');const v=i.value.trim();if(!v)return;const a=loadSetups();a.push(v);saveSetups(a);i.value='';renderStratList();};
+document.getElementById('stratAdd').onclick=()=>{const i=document.getElementById('stratNew');const v=i.value.trim();if(!v)return;const a=loadSetups();a.push({id:stratId(),name:v,notes:'',createdAt:Date.now()});saveSetups(a);i.value='';renderStratList();};
 document.getElementById('stratNew').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('stratAdd').click();}});
 function closeStrat(){document.getElementById('stratOverlay').classList.remove('show');renderSetupSelect(document.getElementById('f_setup').value);}
 document.getElementById('stratX').onclick=closeStrat;
 document.getElementById('stratDone').onclick=closeStrat;
 document.getElementById('stratOverlay').addEventListener('click',e=>{if(e.target.id==='stratOverlay')closeStrat();});
+
+/* ============================================================
+   STRATEGIES PAGE
+   ============================================================ */
+let selectedStratId=null;
+function stratStats(name){
+  const trades=loadTrades().filter(t=>t.setup===name);
+  const closed=trades.filter(isClosed);
+  const ps=closed.map(pnl);
+  const wins=ps.filter(p=>p>0);
+  const net=ps.reduce((a,b)=>a+b,0);
+  return {count:trades.length,closed:closed.length,wins:wins.length,winRate:closed.length?wins.length/closed.length*100:0,net};
+}
+function renderStrategiesPage(){
+  const el=document.getElementById('stratPageContent');
+  if(selectedStratId){renderStratDetail(el);}else{renderStratGrid(el);}
+}
+function renderStratGrid(el){
+  const setups=loadSetups();
+  let html='<div class="page-head"><div><h1>Strategies</h1><div class="sub">Manage your trading strategies</div></div><button class="btn btn-primary" id="addStratPageBtn">+ Add Strategy</button></div>';
+  if(!setups.length){
+    html+='<div style="text-align:center;color:var(--muted);padding:60px 20px">No strategies yet. Add one to get started.</div>';
+  }else{
+    html+='<div class="strat-cards">';
+    setups.forEach(s=>{
+      const st=stratStats(s.name);
+      html+=`<div class="strat-card" data-strat-id="${s.id}">
+        <div class="sc-name">${esc(s.name)}</div>
+        <div class="sc-notes">${s.notes?esc(s.notes):'<span style="opacity:.5">No notes</span>'}</div>
+        <div class="sc-stats">
+          <div class="ss"><div class="sk">Trades</div><div class="sv">${st.count}</div></div>
+          <div class="ss"><div class="sk">Win Rate</div><div class="sv">${st.closed?st.winRate.toFixed(1)+'%':'—'}</div></div>
+          <div class="ss"><div class="sk">Net P&L</div><div class="sv ${clsNum(st.net)}">${st.closed?money(st.net):'—'}</div></div>
+        </div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  el.innerHTML=html;
+  const addBtn=document.getElementById('addStratPageBtn');
+  if(addBtn)addBtn.onclick=()=>openStratEdit(null);
+  el.querySelectorAll('.strat-card').forEach(card=>card.addEventListener('click',()=>{selectedStratId=card.dataset.stratId;renderStrategiesPage();}));
+}
+function renderStratDetail(el){
+  const setups=loadSetups();
+  const strat=setups.find(s=>s.id===selectedStratId);
+  if(!strat){selectedStratId=null;renderStratGrid(el);return;}
+  const st=stratStats(strat.name);
+  const linked=loadTrades().filter(t=>t.setup===strat.name);
+  let html='<div class="strat-detail-head">';
+  html+='<button class="btn-ic" id="stratBack" title="Back to strategies">&#8249;</button>';
+  html+=`<h1>${esc(strat.name)}</h1>`;
+  html+='<div style="margin-left:auto;display:flex;gap:8px">';
+  html+='<button class="btn btn-ghost" id="stratEditBtn">Edit</button>';
+  html+='<button class="btn btn-danger" id="stratDelBtn">Delete</button>';
+  html+='</div></div>';
+  html+='<div class="strat-detail-stats">';
+  [{label:'Total Trades',val:st.count,cls:''},{label:'Closed',val:st.closed,cls:''},{label:'Win Rate',val:st.closed?st.winRate.toFixed(1)+'%':'—',cls:st.closed?(st.winRate>=50?'pos':'neg'):''},{label:'Net P&L',val:st.closed?money(st.net):'—',cls:st.closed?clsNum(st.net):''}].forEach(s=>{
+    html+=`<div class="stat"><div class="label">${s.label}</div><div class="val ${s.cls}">${s.val}</div></div>`;
+  });
+  html+='</div>';
+  if(strat.notes)html+='<div class="strat-detail-notes"><h3>Notes</h3><div class="md-prev">'+mdToHtml(strat.notes)+'</div></div>';
+  html+=renderStratTrades(linked);
+  el.innerHTML=html;
+  document.getElementById('stratBack').onclick=()=>{selectedStratId=null;renderStrategiesPage();};
+  document.getElementById('stratEditBtn').onclick=()=>openStratEdit(strat.id);
+  document.getElementById('stratDelBtn').onclick=()=>deleteStrategy(strat.id);
+  el.querySelectorAll('tr[data-id]').forEach(tr=>tr.addEventListener('click',()=>openDetail(tr.dataset.id)));
+}
+function renderStratTrades(linked){
+  if(!linked.length)return '<div style="color:var(--muted);text-align:center;padding:30px">No trades linked to this strategy yet.</div>';
+  linked.sort((a,b)=>{const da=parseD(tradeDate(a)),db=parseD(tradeDate(b));return (db||0)-(da||0);});
+  let html='<div class="table-card"><table><thead><tr><th>Ticker</th><th>Dir</th><th>Entry</th><th>Exit</th><th>Size</th><th>P&amp;L</th><th>Status</th><th>Date</th></tr></thead><tbody>';
+  linked.forEach(t=>{
+    const p=pnl(t),closed=isClosed(t),cl=contractLabel(t);
+    html+=`<tr data-id="${t.id}" style="cursor:pointer"><td class="tk">${t.ticker||'—'}${cl?`<div style="font-size:10.5px;color:var(--muted);font-weight:600;margin-top:2px">${esc(cl)}</div>`:''}</td><td><span class="badge ${t.direction==='Short'?'b-short':'b-long'}">${t.direction||'—'}</span></td><td class="mono">${num(t.entryPrice)!==null?money(num(t.entryPrice)):'—'}</td><td class="mono">${num(t.exitPrice)!==null?money(num(t.exitPrice)):'—'}</td><td class="mono">${t.positionSize||'—'}</td><td class="mono ${p!==null?clsNum(p):''}" style="font-weight:700">${p!==null?money(p):'—'}</td><td><span class="badge ${closed?'b-closed':'b-open'}">${closed?'Closed':'Open'}</span></td><td>${tradeDate(t)||'—'}</td></tr>`;
+  });
+  html+='</tbody></table></div>';
+  return html;
+}
+function openStratEdit(id){
+  const strat=id?loadSetups().find(s=>s.id===id):null;
+  document.getElementById('stratEditTitle').textContent=strat?'Edit Strategy':'Add Strategy';
+  document.getElementById('stratEditName').value=strat?strat.name:'';
+  document.getElementById('stratEditNotes').value=strat?(strat.notes||''):'';
+  document.getElementById('stratEditOverlay').dataset.editId=id||'';
+  document.getElementById('stratEditOverlay').classList.add('show');
+}
+function closeStratEdit(){document.getElementById('stratEditOverlay').classList.remove('show');}
+function saveStratEdit(){
+  const name=document.getElementById('stratEditName').value.trim();
+  if(!name){alert('Strategy name is required.');return;}
+  const notes=document.getElementById('stratEditNotes').value;
+  const editId=document.getElementById('stratEditOverlay').dataset.editId;
+  const setups=loadSetups();
+  if(editId){
+    const s=setups.find(x=>x.id===editId);
+    if(s){
+      const oldName=s.name;
+      s.name=name;s.notes=notes;
+      saveSetups(setups);
+      if(oldName!==name){const trades=loadTrades();let ch=false;trades.forEach(t=>{if(t.setup===oldName){t.setup=name;ch=true;}});if(ch)saveTrades(trades);}
+    }
+  }else{
+    setups.push({id:stratId(),name,notes,createdAt:Date.now()});
+    saveSetups(setups);
+  }
+  closeStratEdit();
+  renderStrategiesPage();
+}
+function deleteStrategy(id){
+  if(!confirm('Delete this strategy? This cannot be undone.'))return;
+  const setups=loadSetups().filter(s=>s.id!==id);
+  saveSetups(setups);
+  if(selectedStratId===id)selectedStratId=null;
+  renderStrategiesPage();
+}
+document.getElementById('stratEditX').onclick=closeStratEdit;
+document.getElementById('stratEditCancel').onclick=closeStratEdit;
+document.getElementById('stratEditSave').onclick=saveStratEdit;
+document.getElementById('stratEditOverlay').addEventListener('click',e=>{if(e.target.id==='stratEditOverlay')closeStratEdit();});
+document.getElementById('stratEditName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveStratEdit();}});
 
 /* ============================================================
    LOG TRADE — form
@@ -1334,6 +1512,7 @@ document.addEventListener('keydown',e=>{
   if(e.key!=='Escape')return;
   const lb=document.getElementById('lightbox');
   if(lb.classList.contains('show')){lb.classList.remove('show');return;}
+  if(document.getElementById('stratEditOverlay').classList.contains('show')){closeStratEdit();return;}
   if(document.getElementById('stratOverlay').classList.contains('show')){closeStrat();return;}
   if(document.getElementById('detailOverlay').classList.contains('show')){closeDetail();return;}
 });

@@ -14,6 +14,7 @@ Inspired by the look of tools like TradeZella, but free, open source, and local-
 - **Log trades** — stocks or options (Call/Put, strike, expiration, x100 contract math), entry/exit, position size, stop/target, auto-calculated risk amount (contracts × fill price × multiplier), a live risk meter, emotion tags, pre/post-trade notes, and pasteable chart screenshots.
 - **Auto-updating balance** — set a starting balance once; your current balance updates itself after every closed trade.
 - **Trade history** — grouped by day with a running balance and end-of-day totals, search + date filter, and quick edit/delete. Built to reconcile against your broker.
+- **Strategies** — a dedicated page to manage strategies with markdown notes, per-strategy stats (trade count, win rate, net P&L), and a linked trades view. Edit or rename a strategy and all associated trades update automatically.
 - **Notes** — a Markdown document library with folders and subfolders, Write/Preview, and autosave.
 - **Backup** — one-click Export / Import so you never lose your data.
 
