@@ -29,8 +29,16 @@ The only external request the app makes is loading the Chart.js charting library
 
 ## Use it
 
-- **Online:** open the live demo link above.
-- **Your own copy:** download `index.html` and double-click it. It opens in your browser and just works.
+**Online (easiest):** open the live demo link above. It runs right in your browser and your data saves locally — you can bookmark it, no download needed.
+
+## Download your own copy (no git or terminal required)
+
+- **The whole project:** click the green **`< > Code`** button near the top of this page, then **Download ZIP**. Unzip it and double-click **`index.html`**.
+- **Just the app file:** open **`index.html`** in the file list above, then click the **Download raw file** icon on that file's toolbar. Double-click the saved file to open it.
+
+Either way it works exactly the same — one self-contained file, with your data stored privately in your own browser.
+
+> Sharing tip: send people the live-demo **link**, not the `.html` file. Some chat apps (Discord, etc.) flag HTML attachments as unsafe, even though this one isn't.
 
 ## Is it safe? (open source, on purpose)
 
