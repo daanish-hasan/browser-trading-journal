@@ -11,7 +11,7 @@ Inspired by the look of tools like TradeZella, but free, open source, and local-
 ## Features
 
 - **Dashboard** — net P&L, win rate, profit factor, avg win/loss, open trades; a monthly P&L calendar with per-day dollar and percentage returns; and performance charts with a date-range filter.
-- **Log trades** — stocks or options (Call/Put, strike, expiration, x100 contract math), entry/exit, position size, stop/target, a live risk meter, emotion tags, pre/post-trade notes, and pasteable chart screenshots.
+- **Log trades** — stocks or options (Call/Put, strike, expiration, x100 contract math), entry/exit, position size, stop/target, auto-calculated risk amount (contracts × fill price × multiplier), a live risk meter, emotion tags, pre/post-trade notes, and pasteable chart screenshots.
 - **Auto-updating balance** — set a starting balance once; your current balance updates itself after every closed trade.
 - **Trade history** — grouped by day with a running balance and end-of-day totals, search + date filter, and quick edit/delete. Built to reconcile against your broker.
 - **Notes** — a Markdown document library with folders and subfolders, Write/Preview, and autosave.

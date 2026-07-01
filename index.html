@@ -475,8 +475,8 @@
           <input type="text" inputmode="decimal" id="f_exitPrice" placeholder="leave blank if open">
         </div>
         <div class="field">
-          <label>Risk Amount ($)</label>
-          <input type="text" inputmode="decimal" id="f_risk" placeholder="0.00">
+          <label>Risk Amount ($) <span style="color:var(--green)">· auto</span></label>
+          <input type="text" id="f_risk" readonly style="opacity:.9;cursor:not-allowed;font-weight:700" placeholder="0.00">
         </div>
 
         <div class="field">
@@ -897,6 +897,7 @@ function applyInstrument(){
   document.getElementById('lbl_entry').innerHTML=(opt?'Entry Premium':'Entry Price')+' <span class="req">*</span>';
   document.getElementById('lbl_exit').innerHTML=(opt?'Exit Premium':'Exit Price')+' <span style="color:var(--muted)">(opt)</span>';
   document.getElementById('lbl_size').innerHTML=(opt?'Contracts':'Position Size')+' <span class="req">*</span>';
+  if(typeof calcRisk==='function')calcRisk();
 }
 
 // emotions
@@ -909,12 +910,22 @@ const riskScaleInput=document.getElementById('riskScale');
 riskScaleInput.value=getRiskScale();
 riskScaleInput.addEventListener('input',()=>{let v=num(riskScaleInput.value);if(v===null||v<1)v=1;if(v>100)v=100;setRiskScale(v);updateRisk();});
 riskScaleInput.addEventListener('blur',()=>{riskScaleInput.value=getRiskScale();});
-['f_risk','f_account'].forEach(id=>document.getElementById(id).addEventListener('input',updateRisk));
+document.getElementById('f_account').addEventListener('input',updateRisk);
+function calcRisk(){
+  const entry=num(document.getElementById('f_entryPrice').value),
+        size=num(document.getElementById('f_size').value);
+  const riskEl=document.getElementById('f_risk');
+  if(entry===null||size===null||entry<=0||size<=0){riskEl.value='';updateRisk();return;}
+  const mult=instrument==='Option'?100:1;
+  riskEl.value=(entry*size*mult).toFixed(2);
+  updateRisk();
+}
+['f_entryPrice','f_size'].forEach(id=>document.getElementById(id).addEventListener('input',calcRisk));
 function updateRisk(){
   const risk=num(document.getElementById('f_risk').value), acct=num(document.getElementById('f_account').value), scale=getRiskScale();
   const fill=document.getElementById('riskFill'), pctEl=document.getElementById('riskPct'), msg=document.getElementById('riskMsg');
   document.getElementById('riskTicks').innerHTML=[0,scale/3,scale*2/3,scale].map(v=>`<span>${fmtTick(v)}%</span>`).join('');
-  if(risk===null||acct===null||acct<=0){fill.style.width='0%';pctEl.textContent='0.00%';pctEl.style.color='var(--muted)';msg.textContent='Enter a risk amount (set your Starting Balance on the Dashboard).';msg.style.color='var(--muted)';return;}
+  if(risk===null||acct===null||acct<=0){fill.style.width='0%';pctEl.textContent='0.00%';pctEl.style.color='var(--muted)';msg.textContent='Enter entry price and size to calculate risk (set your Starting Balance on the Dashboard).';msg.style.color='var(--muted)';return;}
   const p=risk/acct*100;
   pctEl.textContent=p.toFixed(2)+'%';
   fill.style.width=Math.min(p/scale*100,100)+'%';
