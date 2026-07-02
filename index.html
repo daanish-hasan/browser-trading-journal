@@ -21,6 +21,7 @@
     --text:#e7e9f3;
     --muted:#8a90ad;
     --sidebar-w:220px;
+    --topbar-h:56px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -36,7 +37,6 @@
   /* ---------- Sidebar ---------- */
   .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:#0a0c16;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:20}
   .mobile-topbar{display:none}
-  .sidebar-backdrop{display:none}
   .brand{display:flex;align-items:center;gap:10px;padding:20px 18px 18px;border-bottom:1px solid var(--border)}
   .brand .logo{width:32px;height:32px;border-radius:9px;flex:0 0 32px;background:linear-gradient(135deg,var(--purple),#5a45d6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;box-shadow:0 4px 14px rgba(124,106,247,.4)}
   .brand b{font-size:15px;letter-spacing:.2px}
@@ -317,15 +317,14 @@
     .strat-cards{grid-template-columns:1fr}
   }
   @media(max-width:640px){
-    .sidebar{top:56px;transform:translateX(-100%);transition:transform .25s ease}
+    .sidebar{top:var(--topbar-h);transform:translateX(-100%);transition:transform .25s ease}
     .sidebar.open{transform:translateX(0)}
-    .main{margin-left:0;padding-top:78px}
-    .mobile-topbar{display:flex;position:fixed;top:0;left:0;right:0;height:56px;background:#0a0c16;border-bottom:1px solid var(--border);align-items:center;gap:12px;padding:0 16px;z-index:25}
+    .main{margin-left:0;padding-top:calc(var(--topbar-h) + 22px)}
+    .mobile-topbar{display:flex;position:fixed;top:0;left:0;right:0;height:var(--topbar-h);background:#0a0c16;border-bottom:1px solid var(--border);align-items:center;gap:12px;padding:0 16px;z-index:25}
     .mobile-topbar .hamburger{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 36px;color:var(--text)}
     .mobile-topbar .hamburger svg{width:20px;height:20px}
     .mobile-topbar b{font-size:14px}
-    .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(6,7,14,.6);z-index:19}
-    .sidebar-backdrop.show{display:block}
+    .sidebar-backdrop{z-index:19}
   }
 </style>
 </head>
@@ -335,9 +334,9 @@
   <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
   </button>
-  <b>Browser-Based Trading Journal</b>
+  <b id="mobileBrand"></b>
 </div>
-<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<div class="overlay sidebar-backdrop" id="sidebarBackdrop"></div>
 
 <!-- ================= SIDEBAR ================= -->
 <aside class="sidebar">
@@ -735,6 +734,7 @@ function contractLabel(t){
    NAVIGATION
    ============================================================ */
 const sidebarEl=document.querySelector('.sidebar'), sidebarBackdrop=document.getElementById('sidebarBackdrop'), hamburgerBtn=document.getElementById('hamburgerBtn');
+document.getElementById('mobileBrand').textContent=document.querySelector('.brand b').textContent+' '+document.querySelector('.brand span').textContent;
 function openSidebar(){sidebarEl.classList.add('open');sidebarBackdrop.classList.add('show');}
 function closeSidebar(){sidebarEl.classList.remove('open');sidebarBackdrop.classList.remove('show');}
 hamburgerBtn.addEventListener('click',()=>sidebarEl.classList.contains('open')?closeSidebar():openSidebar());
@@ -1486,28 +1486,33 @@ function renderEditor(){
   wrap.innerHTML=`
     <div class="etop">
       <input class="note-title-in" id="noteTitle" value="${escA(n.name)}" placeholder="Untitled">
-      <div class="md-tabs"><button type="button" data-tab="write">Write</button><button type="button" data-tab="prev" class="active">Preview</button></div>
+      <div class="md-tabs"><button type="button" data-tab="write">Write</button><button type="button" data-tab="prev">Preview</button></div>
       <button class="btn btn-danger" id="noteDel" style="padding:8px 16px">Delete</button>
     </div>
-    <textarea class="note-area" id="noteArea" placeholder="# Start writing in markdown..." style="display:none">${esc(n.content||'')}</textarea>
-    <div class="md-prev" id="notedPrev">${mdToHtml(n.content||'')}</div>
+    <textarea class="note-area" id="noteArea" placeholder="# Start writing in markdown...">${esc(n.content||'')}</textarea>
+    <div class="md-prev" id="notedPrev"></div>
     <div class="note-meta"><span id="noteSaved">All changes saved locally</span><span id="noteUpd">Updated ${fmtTime(n.updatedAt)}</span></div>`;
-  const ta=document.getElementById('noteArea'), titleIn=document.getElementById('noteTitle'), prev=document.getElementById('notedPrev');
+  const ta=document.getElementById('noteArea'), titleIn=document.getElementById('noteTitle'), prev=document.getElementById('notedPrev'), tabBtns=wrap.querySelectorAll('[data-tab]');
+  function showTab(tab){
+    tabBtns.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+    if(tab==='prev'){prev.innerHTML=mdToHtml(ta.value);ta.style.display='none';prev.style.display='block';}
+    else{ta.style.display='block';prev.style.display='none';}
+  }
   titleIn.addEventListener('input',()=>{n.name=titleIn.value;n.updatedAt=Date.now();saveNotes();renderTree();document.getElementById('noteUpd').textContent='Updated '+fmtTime(n.updatedAt);});
   ta.addEventListener('input',()=>{n.content=ta.value;n.updatedAt=Date.now();saveNotes();document.getElementById('noteSaved').textContent='Saved ✓';document.getElementById('noteUpd').textContent='Updated '+fmtTime(n.updatedAt);});
   document.getElementById('noteDel').addEventListener('click',()=>delItem(selectedNoteId));
-  wrap.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
-    wrap.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));
-    if(b.dataset.tab==='prev'){prev.innerHTML=mdToHtml(ta.value);ta.style.display='none';prev.style.display='block';}
-    else{ta.style.display='block';prev.style.display='none';}
-  }));
+  tabBtns.forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+  showTab(n.content&&n.content.trim()?'prev':'write');
 }
 document.getElementById('newFolderBtn').onclick=()=>addFolder(null);
 document.getElementById('newNoteBtn').onclick=()=>addNote(null);
 
 /* ---------- tiny markdown renderer ---------- */
+const _mdCache=new Map();
 function mdToHtml(src){
   if(!src||!src.trim())return '<p style="color:var(--muted)">Nothing to preview yet.</p>';
+  if(_mdCache.has(src))return _mdCache.get(src);
+  const _cacheKey=src;
   const blocks=[];
   src=src.replace(/```([\s\S]*?)```/g,(m,c)=>{blocks.push(c.replace(/^\n/,''));return '\n%%CB'+(blocks.length-1)+'%%\n';});
   const isPH=l=>/^%%CB\d+%%$/.test(l.trim());
@@ -1535,6 +1540,7 @@ function mdToHtml(src){
     while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(#{1,6})\s/.test(lines[i])&&!/^\s*[-*+]\s+/.test(lines[i])&&!/^\s*\d+\.\s+/.test(lines[i])&&!/^\s*>\s?/.test(lines[i])&&!/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim())&&!isPH(lines[i])){para.push(lines[i]);i++;}
     html+='<p>'+inline(para.join('\n')).replace(/\n/g,'<br>')+'</p>';
   }
+  _mdCache.set(_cacheKey,html);
   return html;
 }
 
@@ -1548,6 +1554,7 @@ document.addEventListener('keydown',e=>{
   if(document.getElementById('stratEditOverlay').classList.contains('show')){closeStratEdit();return;}
   if(document.getElementById('stratOverlay').classList.contains('show')){closeStrat();return;}
   if(document.getElementById('detailOverlay').classList.contains('show')){closeDetail();return;}
+  if(sidebarEl.classList.contains('open')){closeSidebar();return;}
 });
 
 /* ============================================================
