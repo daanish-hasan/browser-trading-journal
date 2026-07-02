@@ -61,3 +61,12 @@ This is a personal hobby project provided **as-is, with no warranty**. It's a jo
 ## License
 
 MIT. See [LICENSE](LICENSE). Free to use, modify, and share.
+
+## A note from Daanish
+
+Hey! Thanks for downloading the journal. I really appreciate you giving this a try. I get a lot of fulfillment from trying to help others in this journey we call life.
+
+What I learned in trading is that the market is a mirror of yourself. When you look out into that chart, what you're seeing is yourself. What I mean by that is that your psychology is what will get you across the line. Identifying how you think, what you feel, emotionally charged beliefs, pain you've suffered, how that all ties into your moment-to-moment existence, and how that influences your trading: once you start getting the answers to this deep self-awareness, you will be able to become consistent and trade a system (like a machine). The consistency is where profitability becomes possible. The money is the byproduct of your execution. Your execution ties to your psychology and how well you abide by your rules and your system. And this will be how you track yourself.
+
+Trade well,
+**Daanish**

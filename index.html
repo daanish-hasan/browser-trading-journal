@@ -1366,7 +1366,7 @@ function loadNotes(){
 }
 function saveNotes(){localStorage.setItem(STORE_NOTES,JSON.stringify({tree:notesTree,expanded:[...expanded],selected:selectedNoteId}));}
 function seedNotes(){
-  const readme={id:nid(),type:'note',name:'Read Me - Start Here',updatedAt:Date.now(),content:`# Welcome to your Trading Journal 👋
+  const readme={id:nid(),type:'note',name:'Read Me - Start Here',updatedAt:Date.now(),content:`# Welcome to your Trading Journal
 
 Thanks for giving this a try. This is a private, single-file trading journal that runs entirely in your browser, on your phone, tablet, or computer. No sign-up, no server, no tracking.
 
@@ -1376,11 +1376,12 @@ This Read Me lives in your **Notes** section. Delete it once you're set up.
 
 ---
 
-## The four pages (left sidebar)
+## The five pages (left sidebar)
 
 - **Dashboard:** your stats, a monthly P&L calendar, and performance charts.
 - **Log Trade:** add or edit a trade.
 - **Trade History:** every trade, grouped by day, with a running balance.
+- **Strategies:** your strategies, each with its own markdown notes, stats, and linked trades (more below).
 - **Notes:** this document library (more below).
 
 ## First: set your balance
@@ -1395,7 +1396,7 @@ Open **Log Trade** and fill in what you have:
 - Enter ticker, direction, entry, size, and (when you close it) the exit. Leave the exit blank to keep a trade open.
 - The **Risk Meter** shows risk as a percent of your balance. Set your own ceiling with the Scale max box; it runs green to yellow to red as you approach it.
 - Tag your **emotions**, write **pre-trade reasoning** and a **post-trade review**, and paste or upload **chart screenshots**.
-- Manage your **strategies** with the small gear next to Setup: add, rename, or remove them.
+- Pick a **strategy** from the Setup dropdown, or use the small gear next to it to quickly add, rename, or remove one.
 - Click **Save**. Only trades with an exit count toward realized P&L.
 
 ## Reading the Dashboard
@@ -1406,6 +1407,10 @@ Open **Log Trade** and fill in what you have:
 ## Reconciling with your broker
 
 Trade History shows a **running balance after every trade** and an **end-of-day balance** for each day. If your journal ever disagrees with your broker, scan the Balance column top to bottom. The first row that stops matching is the trade you missed or mistyped. Use the **date filter** to zoom in, and the small edit and delete buttons on each row to fix it fast.
+
+## Strategies
+
+Open the **Strategies** page for a full view of each one: markdown notes for your rules and setup criteria, stats (trade count, win rate, net P&L), and every trade linked to it. Rename a strategy here and every trade tagged with it updates automatically.
 
 ## Using Notes
 
@@ -1419,7 +1424,7 @@ Everything is stored locally in this one browser. Clearing your browser site dat
 
 ---
 
-## A note from Daanish 🙏
+## A note from Daanish
 
 Hey! Thanks for downloading the journal. I really appreciate you giving this a try. I get a lot of fulfillment from trying to help others in this journey we call life.
 
@@ -1481,11 +1486,11 @@ function renderEditor(){
   wrap.innerHTML=`
     <div class="etop">
       <input class="note-title-in" id="noteTitle" value="${escA(n.name)}" placeholder="Untitled">
-      <div class="md-tabs"><button type="button" data-tab="write" class="active">Write</button><button type="button" data-tab="prev">Preview</button></div>
+      <div class="md-tabs"><button type="button" data-tab="write">Write</button><button type="button" data-tab="prev" class="active">Preview</button></div>
       <button class="btn btn-danger" id="noteDel" style="padding:8px 16px">Delete</button>
     </div>
-    <textarea class="note-area" id="noteArea" placeholder="# Start writing in markdown...">${esc(n.content||'')}</textarea>
-    <div class="md-prev" id="notedPrev" style="display:none"></div>
+    <textarea class="note-area" id="noteArea" placeholder="# Start writing in markdown..." style="display:none">${esc(n.content||'')}</textarea>
+    <div class="md-prev" id="notedPrev">${mdToHtml(n.content||'')}</div>
     <div class="note-meta"><span id="noteSaved">All changes saved locally</span><span id="noteUpd">Updated ${fmtTime(n.updatedAt)}</span></div>`;
   const ta=document.getElementById('noteArea'), titleIn=document.getElementById('noteTitle'), prev=document.getElementById('notedPrev');
   titleIn.addEventListener('input',()=>{n.name=titleIn.value;n.updatedAt=Date.now();saveNotes();renderTree();document.getElementById('noteUpd').textContent='Updated '+fmtTime(n.updatedAt);});
