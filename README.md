@@ -51,15 +51,6 @@ It is a single HTML file with the CSS and JavaScript inline — you can read eve
 - [Chart.js](https://www.chartjs.org/) for charts (loaded from a CDN).
 - Data persistence via the browser `localStorage` API.
 
-## Set up your shareable link (GitHub Pages)
-
-1. Push this repo to GitHub (steps below).
-2. In the repo, open **Settings → Pages**.
-3. Under **Build and deployment → Source**, choose **Deploy from a branch**.
-4. Select branch **main** and folder **/ (root)**, then **Save**.
-5. Wait about a minute and refresh — GitHub shows your live URL: `https://daanish-hasan.github.io/browser-trading-journal/`
-6. Paste that URL into the Live demo link near the top of this README.
-
 ## Disclaimer
 
 This is a personal hobby project provided **as-is, with no warranty**. It is a journaling tool, **not financial advice**, and it does not execute trades or connect to any broker. Use at your own risk and keep your own backups.
