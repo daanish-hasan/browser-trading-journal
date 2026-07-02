@@ -1,6 +1,8 @@
 # Browser-Based Trading Journal
 
-A private, single-file trading journal that runs entirely in your web browser. No sign-up, no server, no tracking — your data never leaves your computer.
+A private, single-file trading journal that runs entirely in your web browser, on your phone, tablet, or computer. No sign-up, no server, no tracking.
+
+> **The catch, and it's a real one:** your data lives in that browser's local storage, on that one device. It doesn't sync between your phone and your laptop, and clearing your browser data wipes it for good. Export a backup if you actually care about keeping your history. That's the tradeoff for a tool with zero servers and zero accounts, and it's the only real downside here.
 
 Inspired by the look of tools like TradeZella, but free, open source, and local-first.
 
@@ -10,41 +12,41 @@ Inspired by the look of tools like TradeZella, but free, open source, and local-
 
 ## Features
 
-- **Dashboard** — net P&L, win rate, profit factor, avg win/loss, open trades; a monthly P&L calendar with per-day dollar and percentage returns; and four charts with a date-range filter (Today / This week / This month / custom): cumulative P&L (equity curve), win rate by strategy, P&L by day of week, and emotion vs. average P&L.
-- **Log trades** — stocks or options (Call/Put, strike, expiration, x100 contract math), entry/exit, position size, stop/target, auto-calculated risk amount (contracts × fill price × multiplier), a live risk meter, emotion tags, pre/post-trade notes, and pasteable chart screenshots.
-- **Auto-updating balance** — set a starting balance once; your current balance updates itself after every closed trade.
-- **Trade history** — grouped by day with a running balance and end-of-day totals, search + date filter, and quick edit/delete. Built to reconcile against your broker.
-- **Strategies** — a dedicated page to manage strategies with markdown notes, per-strategy stats (trade count, win rate, net P&L), and a linked trades view. Edit or rename a strategy and all associated trades update automatically.
-- **Notes** — a Markdown document library with folders and subfolders, Write/Preview, and autosave.
-- **Backup** — one-click Export / Import so you never lose your data.
-- **Mobile-friendly** — on narrow screens the sidebar tucks behind a menu button, so the journal works on a phone in portrait, not just desktop or landscape.
+- **Dashboard:** net P&L, win rate, profit factor, avg win/loss, open trades, a monthly P&L calendar with per-day dollar and percentage returns, and four charts with a date-range filter (Today / This week / This month / custom): cumulative P&L (equity curve), win rate by strategy, P&L by day of week, and emotion vs. average P&L.
+- **Log trades:** stocks or options (Call/Put, strike, expiration, x100 contract math), entry/exit, position size, stop/target, auto-calculated risk amount (contracts × fill price × multiplier), a live risk meter, emotion tags, pre/post-trade notes, and pasteable chart screenshots.
+- **Auto-updating balance:** set a starting balance once and your current balance updates itself after every closed trade.
+- **Trade history:** grouped by day with a running balance and end-of-day totals, search + date filter, and quick edit/delete. Built to reconcile against your broker.
+- **Strategies:** a dedicated page to manage strategies with markdown notes, per-strategy stats (trade count, win rate, net P&L), and a linked trades view. Edit or rename a strategy and all associated trades update automatically.
+- **Notes:** a Markdown document library with folders and subfolders, Write/Preview, and autosave.
+- **Backup:** one-click Export / Import so you never lose your data.
+- **Works on your phone too:** on narrow screens the sidebar tucks behind a menu button, so you can log a trade from your phone in portrait, not just on a desktop or in landscape.
 
-## How your data is stored (and why it is private)
+## How your data is stored (and why it's private)
 
-Everything lives in your browser's **localStorage**, on your own machine. There is no backend, no account, and nothing is uploaded anywhere. Because the data is tied to your browser:
+Everything lives in your browser's **localStorage**, right on the device you're using. There's no backend, no account, and nothing gets uploaded anywhere. Because of that:
 
-- It persists across sessions on the same browser and computer.
-- It does **not** sync to other devices or browsers.
-- Clearing your browser's site data will erase it — so use **Export backup** to save a file, and **Import backup** to restore it.
+- It persists across sessions, on that same browser and device.
+- It does **not** sync to your other devices or browsers. Log a trade on your phone and it stays on your phone.
+- Clearing your browser's site data will erase it. Use **Export backup** to save a file, and **Import backup** to bring it back, on the same device or a new one.
 
-The only external request the app makes is loading the Chart.js charting library from a CDN the first time you open it, so the very first load needs an internet connection. Everything else works offline.
+The only external request the app makes is loading the Chart.js charting library from a CDN the first time you open it, so the very first load needs an internet connection. Everything after that works offline.
 
 ## Use it
 
-**Online (easiest):** open the live demo link above. It runs right in your browser and your data saves locally — you can bookmark it, no download needed.
+**Online (easiest):** open the live demo link above. It runs right in your browser and your data saves locally. Bookmark it, no download needed.
 
 ## Download your own copy (no git or terminal required)
 
 - **The whole project:** click the green **`< > Code`** button near the top of this page, then **Download ZIP**. Unzip it and double-click **`index.html`**.
 - **Just the app file:** open **`index.html`** in the file list above, then click the **Download raw file** icon on that file's toolbar. Double-click the saved file to open it.
 
-Either way it works exactly the same — one self-contained file, with your data stored privately in your own browser.
+Either way it works exactly the same: one self-contained file, with your data stored privately in your own browser.
 
 > Sharing tip: send people the live-demo **link**, not the `.html` file. Some chat apps (Discord, etc.) flag HTML attachments as unsafe, even though this one isn't.
 
 ## Is it safe? (open source, on purpose)
 
-It is a single HTML file with the CSS and JavaScript inline — you can read every line. No obfuscation, no network calls except the chart library, no data collection. Fork it, audit it, change it.
+It's a single HTML file with the CSS and JavaScript inline, so you can read every line yourself. No obfuscation, no network calls besides the chart library, no data collection. Fork it, audit it, change it.
 
 ## Tech
 
@@ -54,8 +56,8 @@ It is a single HTML file with the CSS and JavaScript inline — you can read eve
 
 ## Disclaimer
 
-This is a personal hobby project provided **as-is, with no warranty**. It is a journaling tool, **not financial advice**, and it does not execute trades or connect to any broker. Use at your own risk and keep your own backups.
+This is a personal hobby project provided **as-is, with no warranty**. It's a journaling tool, **not financial advice**, and it doesn't execute trades or connect to any broker. Use at your own risk and keep your own backups.
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Free to use, modify, and share.
+MIT. See [LICENSE](LICENSE). Free to use, modify, and share.
