@@ -64,9 +64,12 @@ MIT. See [LICENSE](LICENSE). Free to use, modify, and share.
 
 ## A note from Daanish
 
-Hey! Thanks for downloading the journal. I really appreciate you giving this a try. I get a lot of fulfillment from trying to help others in this journey we call life.
+Hey! Thanks for checking out the journal. I really appreciate you giving this a try. I get a lot of fulfillment from trying to help others in this journey we call life.
 
-What I learned in trading is that the market is a mirror of yourself. When you look out into that chart, what you're seeing is yourself. What I mean by that is that your psychology is what will get you across the line. Identifying how you think, what you feel, emotionally charged beliefs, pain you've suffered, how that all ties into your moment-to-moment existence, and how that influences your trading: once you start getting the answers to this deep self-awareness, you will be able to become consistent and trade a system (like a machine). The consistency is where profitability becomes possible. The money is the byproduct of your execution. Your execution ties to your psychology and how well you abide by your rules and your system. And this will be how you track yourself.
+What I learned in trading is that the market is a mirror of yourself. When you look out into that chart, what you're seeing is yourself. What I mean by that is that your psychology is what will get you across the line.
+
+It starts with identifying how you think, what you feel, the emotionally charged beliefs you carry, and the pain you've suffered, and understanding how all of that ties into your moment-to-moment existence and influences your trading. Once you start getting answers to that deep self-awareness, you'll be able to trade a system consistently, like a machine. Consistency is what makes profitability possible. The money is the byproduct of your execution, and your execution ties back to your psychology, to how well you abide by your rules and your system. This is how you'll track yourself.
 
 Trade well,
+
 **Daanish**
