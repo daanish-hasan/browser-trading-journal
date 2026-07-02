@@ -504,7 +504,7 @@
         </div>
         <div class="field">
           <label>Account Balance <span style="color:var(--green)">· auto</span></label>
-          <input type="text" id="f_accountDisp" readonly title="Auto-filled from your Current Balance — updates after every trade" style="opacity:.9;cursor:not-allowed;font-weight:700" value="$0.00">
+          <input type="text" id="f_accountDisp" readonly title="Auto-filled from your Current Balance, updates after every trade" style="opacity:.9;cursor:not-allowed;font-weight:700" value="$0.00">
           <input type="hidden" id="f_account">
         </div>
 
@@ -534,7 +534,7 @@
         <!-- Risk meter -->
         <div class="risk-card">
           <div class="risk-top">
-            <span class="lbl">Risk Meter — % of Account</span>
+            <span class="lbl">Risk Meter · % of Account</span>
             <div class="risk-ctl">
               <span class="scale">Scale max <input type="number" id="riskScale" min="1" max="100" step="0.5">%</span>
               <span class="pct" id="riskPct">0.00%</span>
@@ -948,7 +948,7 @@ function renderSetupSelect(current){
   const sel=document.getElementById('f_setup');
   let names=loadSetups().map(s=>s.name);
   if(current && !names.includes(current))names=[current,...names];
-  sel.innerHTML='<option value="">— Select strategy —</option>'+names.map(s=>`<option value="${escA(s)}">${esc(s)}</option>`).join('');
+  sel.innerHTML='<option value="">Select strategy</option>'+names.map(s=>`<option value="${escA(s)}">${esc(s)}</option>`).join('');
   if(current!==undefined)sel.value=current||'';
 }
 function renderStratList(){
@@ -1134,9 +1134,9 @@ function updateRisk(){
   pctEl.textContent=p.toFixed(2)+'%';
   fill.style.width=Math.min(p/scale*100,100)+'%';
   let col,m;
-  if(p<=scale*0.6){col='var(--green)';m='Within target — '+fmtTick(p)+'% of your '+fmtTick(scale)+'% ceiling.';}
+  if(p<=scale*0.6){col='var(--green)';m='Within target: '+fmtTick(p)+'% of your '+fmtTick(scale)+'% ceiling.';}
   else if(p<=scale*0.9){col='var(--yellow)';m='Approaching your '+fmtTick(scale)+'% risk ceiling.';}
-  else{col='var(--red)';m=(p>scale?'Over':'At')+' your '+fmtTick(scale)+'% ceiling — consider sizing down.';}
+  else{col='var(--red)';m=(p>scale?'Over':'At')+' your '+fmtTick(scale)+'% ceiling. Consider sizing down.';}
   fill.style.background=col;pctEl.style.color=col;msg.style.color=col;msg.textContent=m;
 }
 /* account balance is auto-managed via setFormBalance */
@@ -1195,7 +1195,7 @@ document.getElementById('tradeForm').addEventListener('submit',e=>{
   let trades=loadTrades();
   if(editingId){const i=trades.findIndex(t=>t.id===editingId);if(i>=0){trade.createdAt=trades[i].createdAt;trades[i]=trade;}}
   else trades.push(trade);
-  try{saveTrades(trades);}catch(err){alert('Could not save — storage may be full from large images. Remove some screenshots and retry.');return;}
+  try{saveTrades(trades);}catch(err){alert('Could not save. Storage may be full from large images. Remove some screenshots and retry.');return;}
   resetForm();switchView('history');
 });
 document.getElementById('clearBtn').addEventListener('click',resetForm);
@@ -1248,7 +1248,7 @@ function loadIntoForm(t){
   updateRisk();
   document.getElementById('logTitle').textContent='Edit Trade';
   document.getElementById('saveBtn').textContent='Update Trade';
-  document.getElementById('editBannerText').textContent='Editing '+(t.ticker||'trade')+' — make changes and click Update.';
+  document.getElementById('editBannerText').textContent='Editing '+(t.ticker||'trade')+'. Make changes and click Update.';
   document.getElementById('editBanner').classList.add('show');
   switchView('log');
 }
@@ -1437,7 +1437,7 @@ Trade well,
 
 1. Never risk more than my set ceiling per trade
 2. Define my exit *before* I enter
-3. Journal every trade — win or lose
+3. Journal every trade, win or lose
 4. No revenge trades
 5. Review the week every Friday`}
   ]};
@@ -1560,7 +1560,7 @@ const DATA_KEYS=[STORE_TRADES,STORE_ACCT,STORE_SETUPS,STORE_NOTES,STORE_RISK,STO
 function buildBackup(){var dump={app:'trading-journal',version:2,exportedAt:new Date().toISOString(),data:{}};DATA_KEYS.forEach(function(k){var v=localStorage.getItem(k);if(v!==null)dump.data[k]=v;});return dump;}
 function exportData(){var dump=buildBackup();var blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});var url=URL.createObjectURL(blob);var a=document.createElement('a');var d=new Date();var stamp=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');a.href=url;a.download='trading-journal-backup-'+stamp+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},1500);}
 function applyBackup(parsed){var data=(parsed&&parsed.data)?parsed.data:parsed;if(!data||typeof data!=='object')return {ok:false,msg:'this file is not a journal backup'};var keys=Object.keys(data).filter(function(k){return DATA_KEYS.indexOf(k)>=0;});if(!keys.length)return {ok:false,msg:'no journal data found in this file'};keys.forEach(function(k){localStorage.setItem(k,data[k]);});loadNotes();resetForm();var rp=document.getElementById('rangePreset');if(rp)rp.value=(getChartRange().preset)||'month';renderDashboard();renderHistory();renderTree();renderEditor();return {ok:true,n:keys.length};}
-function importData(file){var reader=new FileReader();reader.onload=function(ev){var parsed;try{parsed=JSON.parse(ev.target.result);}catch(e){alert('That file could not be read as a backup.');return;}if(!confirm('Import this backup? It will REPLACE the trades, notes, strategies, and balance currently in this journal.'))return;var r=applyBackup(parsed);alert(r.ok?('Backup imported — '+r.n+' items restored.'):('Could not import: '+r.msg+'.'));};reader.readAsText(file);}
+function importData(file){var reader=new FileReader();reader.onload=function(ev){var parsed;try{parsed=JSON.parse(ev.target.result);}catch(e){alert('That file could not be read as a backup.');return;}if(!confirm('Import this backup? It will REPLACE the trades, notes, strategies, and balance currently in this journal.'))return;var r=applyBackup(parsed);alert(r.ok?('Backup imported: '+r.n+' items restored.'):('Could not import: '+r.msg+'.'));};reader.readAsText(file);}
 function setupBackupButtons(){var eb=document.getElementById('exportBtn'),ib=document.getElementById('importBtn'),inp=document.getElementById('importFile');if(!eb)return;eb.addEventListener('click',exportData);ib.addEventListener('click',function(){inp.click();});inp.addEventListener('change',function(e){if(e.target.files[0])importData(e.target.files[0]);e.target.value='';});}
 
 loadSetups();
