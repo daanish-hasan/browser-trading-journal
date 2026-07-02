@@ -35,6 +35,8 @@
 
   /* ---------- Sidebar ---------- */
   .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:#0a0c16;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:20}
+  .mobile-topbar{display:none}
+  .sidebar-backdrop{display:none}
   .brand{display:flex;align-items:center;gap:10px;padding:20px 18px 18px;border-bottom:1px solid var(--border)}
   .brand .logo{width:32px;height:32px;border-radius:9px;flex:0 0 32px;background:linear-gradient(135deg,var(--purple),#5a45d6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;box-shadow:0 4px 14px rgba(124,106,247,.4)}
   .brand b{font-size:15px;letter-spacing:.2px}
@@ -314,10 +316,28 @@
     .notes-wrap{grid-template-columns:1fr}
     .strat-cards{grid-template-columns:1fr}
   }
-  @media(max-width:640px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
+  @media(max-width:640px){
+    .sidebar{top:56px;transform:translateX(-100%);transition:transform .25s ease}
+    .sidebar.open{transform:translateX(0)}
+    .main{margin-left:0;padding-top:78px}
+    .mobile-topbar{display:flex;position:fixed;top:0;left:0;right:0;height:56px;background:#0a0c16;border-bottom:1px solid var(--border);align-items:center;gap:12px;padding:0 16px;z-index:25}
+    .mobile-topbar .hamburger{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 36px;color:var(--text)}
+    .mobile-topbar .hamburger svg{width:20px;height:20px}
+    .mobile-topbar b{font-size:14px}
+    .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(6,7,14,.6);z-index:19}
+    .sidebar-backdrop.show{display:block}
+  }
 </style>
 </head>
 <body class="is-option">
+
+<div class="mobile-topbar">
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+  </button>
+  <b>Browser-Based Trading Journal</b>
+</div>
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
 <!-- ================= SIDEBAR ================= -->
 <aside class="sidebar">
@@ -714,8 +734,14 @@ function contractLabel(t){
 /* ============================================================
    NAVIGATION
    ============================================================ */
+const sidebarEl=document.querySelector('.sidebar'), sidebarBackdrop=document.getElementById('sidebarBackdrop'), hamburgerBtn=document.getElementById('hamburgerBtn');
+function openSidebar(){sidebarEl.classList.add('open');sidebarBackdrop.classList.add('show');}
+function closeSidebar(){sidebarEl.classList.remove('open');sidebarBackdrop.classList.remove('show');}
+hamburgerBtn.addEventListener('click',()=>sidebarEl.classList.contains('open')?closeSidebar():openSidebar());
+sidebarBackdrop.addEventListener('click',closeSidebar);
 document.querySelectorAll('.nav-item').forEach(it=>it.addEventListener('click',()=>switchView(it.dataset.view)));
 function switchView(v){
+  closeSidebar();
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===v));
   document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');

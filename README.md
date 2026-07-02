@@ -17,6 +17,7 @@ Inspired by the look of tools like TradeZella, but free, open source, and local-
 - **Strategies** — a dedicated page to manage strategies with markdown notes, per-strategy stats (trade count, win rate, net P&L), and a linked trades view. Edit or rename a strategy and all associated trades update automatically.
 - **Notes** — a Markdown document library with folders and subfolders, Write/Preview, and autosave.
 - **Backup** — one-click Export / Import so you never lose your data.
+- **Mobile-friendly** — on narrow screens the sidebar tucks behind a menu button, so the journal works on a phone in portrait, not just desktop or landscape.
 
 ## How your data is stored (and why it is private)
 
@@ -54,8 +55,6 @@ It is a single HTML file with the CSS and JavaScript inline — you can read eve
 ## Disclaimer
 
 This is a personal hobby project provided **as-is, with no warranty**. It is a journaling tool, **not financial advice**, and it does not execute trades or connect to any broker. Use at your own risk and keep your own backups.
-
-**Mobile layout:** the current build is not optimized for narrow screens. On a phone (e.g. iPhone) held in **portrait**, the sidebar navigation is hidden with no way to bring it back — rotate to **landscape** to use the app on a handheld device.
 
 ## License
 
