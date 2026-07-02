@@ -55,6 +55,8 @@ It is a single HTML file with the CSS and JavaScript inline — you can read eve
 
 This is a personal hobby project provided **as-is, with no warranty**. It is a journaling tool, **not financial advice**, and it does not execute trades or connect to any broker. Use at your own risk and keep your own backups.
 
+**Mobile layout:** the current build is not optimized for narrow screens. On a phone (e.g. iPhone) held in **portrait**, the sidebar navigation is hidden with no way to bring it back — rotate to **landscape** to use the app on a handheld device.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Free to use, modify, and share.
