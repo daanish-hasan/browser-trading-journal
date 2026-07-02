@@ -1366,24 +1366,26 @@ function loadNotes(){
 }
 function saveNotes(){localStorage.setItem(STORE_NOTES,JSON.stringify({tree:notesTree,expanded:[...expanded],selected:selectedNoteId}));}
 function seedNotes(){
-  const readme={id:nid(),type:'note',name:'Read Me — Start Here',updatedAt:Date.now(),content:`# Welcome to your Trading Journal 👋
+  const readme={id:nid(),type:'note',name:'Read Me - Start Here',updatedAt:Date.now(),content:`# Welcome to your Trading Journal 👋
 
-Thanks for giving this a try! This is a private, single-file trading journal that runs entirely in your browser — no sign-up, no server, and nothing ever leaves your computer.
+Thanks for giving this a try. This is a private, single-file trading journal that runs entirely in your browser, on your phone, tablet, or computer. No sign-up, no server, no tracking.
 
-This Read Me lives in your **Notes** section. Feel free to delete it once you are set up.
+The catch: your data lives in this browser's local storage, on this one device. It doesn't sync anywhere else, so clearing your browser data wipes it for good. Back up if you care about keeping it (see below).
+
+This Read Me lives in your **Notes** section. Delete it once you're set up.
 
 ---
 
 ## The four pages (left sidebar)
 
-- **Dashboard** — your stats, a monthly P&L calendar, and performance charts.
-- **Log Trade** — add or edit a trade.
-- **Trade History** — every trade, grouped by day, with a running balance.
-- **Notes** — this document library (more below).
+- **Dashboard:** your stats, a monthly P&L calendar, and performance charts.
+- **Log Trade:** add or edit a trade.
+- **Trade History:** every trade, grouped by day, with a running balance.
+- **Notes:** this document library (more below).
 
 ## First: set your balance
 
-On the **Dashboard**, type your account size into **Starting Balance**. After that it is automatic — your **Current Balance** updates itself after every closed trade, so you never type your balance into a trade again.
+On the **Dashboard**, type your account size into **Starting Balance**. After that it's automatic: your **Current Balance** updates itself after every closed trade, so you never type your balance into a trade again.
 
 ## Logging a trade
 
@@ -1392,36 +1394,36 @@ Open **Log Trade** and fill in what you have:
 - Choose **Option** or **Stock**. Options add Call/Put, strike, and expiration, and P&L is figured per contract (x100).
 - Enter ticker, direction, entry, size, and (when you close it) the exit. Leave the exit blank to keep a trade open.
 - The **Risk Meter** shows risk as a percent of your balance. Set your own ceiling with the Scale max box; it runs green to yellow to red as you approach it.
-- Tag your **emotions**, write **pre-trade reasoning** and a **post-trade review**, and paste or upload **chart screenshots** (Ctrl+V works too).
-- Manage your **strategies** with the small gear next to Setup — add, rename, or remove them.
+- Tag your **emotions**, write **pre-trade reasoning** and a **post-trade review**, and paste or upload **chart screenshots**.
+- Manage your **strategies** with the small gear next to Setup: add, rename, or remove them.
 - Click **Save**. Only trades with an exit count toward realized P&L.
 
 ## Reading the Dashboard
 
 - The **calendar** colors each day green or red and shows the day P&L in dollars and as a percent of your month-start balance. Those daily percentages add up to the month **Return %**.
-- The **charts** have a **range filter** at the top — Today, This week, This month, custom dates, and more. Set it to This week to see only this week.
+- The **charts** have a **range filter** at the top: Today, This week, This month, or custom dates.
 
 ## Reconciling with your broker
 
-Trade History shows a **running balance after every trade** and an **end-of-day balance** for each day. If your journal ever disagrees with your broker, scan the Balance column top to bottom — the first row that stops matching is the trade you missed or mistyped. Use the **date filter** to zoom in, and the small edit and delete buttons on each row to fix it fast.
+Trade History shows a **running balance after every trade** and an **end-of-day balance** for each day. If your journal ever disagrees with your broker, scan the Balance column top to bottom. The first row that stops matching is the trade you missed or mistyped. Use the **date filter** to zoom in, and the small edit and delete buttons on each row to fix it fast.
 
 ## Using Notes
 
-- **+ Folder** and **+ Note** create items. Folders can hold notes and other folders, so you can build a real library — watchlists, weekly reviews, playbooks.
+- **+ Folder** and **+ Note** create items. Folders can hold notes and other folders, so you can build a real library: watchlists, weekly reviews, playbooks.
 - Hover any row for quick actions: add, rename, or delete.
 - Every note is plain **Markdown**. Toggle **Write / Preview** to see it formatted, and it **autosaves** as you type.
 
 ## Backing up your data (important)
 
-Everything is stored locally in this one browser. Clearing your browser site data will erase it. Use **Export backup** in the sidebar to save a backup file anytime, and **Import backup** to restore it — on this computer after a wipe, or on a totally different machine.
+Everything is stored locally in this one browser. Clearing your browser site data will erase it. Use **Export backup** in the sidebar to save a backup file anytime, and **Import backup** to restore it, on this device after a wipe, or on a new one.
 
 ---
 
 ## A note from Daanish 🙏
 
-Hey — thank you for trying my journal. I built it because I kept losing track of my trades and wanted something simple, private, and actually mine. I hope it helps you as much as it has helped me.
+Hey! Thanks for downloading the journal. I really appreciate you giving this a try. I get a lot of fulfillment from trying to help others in this journey we call life.
 
-Be patient with yourself. Journal every trade — the losers most of all — and let the data, not your emotions, lead the way. Small, consistent improvements compound. You have got this.
+What I learned in trading is that the market is a mirror of yourself. When you look out into that chart, what you're seeing is yourself. What I mean by that is that your psychology is what will get you across the line. Identifying how you think, what you feel, emotionally charged beliefs, pain you've suffered, how that all ties into your moment-to-moment existence, and how that influences your trading: once you start getting the answers to this deep self-awareness, you will be able to become consistent and trade a system (like a machine). The consistency is where profitability becomes possible. The money is the byproduct of your execution. Your execution ties to your psychology and how well you abide by your rules and your system. And this will be how you track yourself.
 
 Trade well,
 **Daanish**`};
